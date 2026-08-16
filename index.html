@@ -4,208 +4,30 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f48fb1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="房間整理">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
   <title>♡ 房間物品整理小精靈 ♡</title>
   <style>
-    :root{
-      --bg:#fff7fb;
-      --bg2:#fff0f7;
-      --card:#ffffff;
-      --text:#5a4350;
-      --muted:#957484;
-      --line:#f4d8e6;
-      --pink:#f48fb1;
-      --pink-dark:#ec6d9a;
-      --pink-soft:#ffe6f0;
-      --pink-softer:#fff2f7;
-      --lav:#f4efff;
-      --mint:#eaf8f0;
-      --peach:#fff0ea;
-      --yellow:#fff8df;
-      --shadow:0 10px 26px rgba(244,143,177,.16);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
-    }
-    header{
-      padding:28px 20px;
-      background:linear-gradient(135deg,#fff,#ffe9f3 65%,#fff7fb);
-      border-bottom:1px solid var(--line);
-    }
-    header h1{margin:0;font-size:26px;letter-spacing:.4px}
-    header p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.75}
-    main{max-width:920px;margin:auto;padding:18px}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    .stat,.card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
-    .stat{padding:16px}
-    .stat strong{display:block;font-size:27px;color:var(--pink-dark)}
-    .stat span{font-size:13px;color:var(--muted)}
-    nav{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
-    button,.upload{
-      font:inherit;cursor:pointer;border:1px solid var(--line);
-      background:#fff;border-radius:999px;padding:11px 16px;color:var(--text);
-      transition:.18s transform,.18s box-shadow,.18s background;
-    }
-    button:hover,.upload:hover{transform:translateY(-1px);box-shadow:0 8px 16px rgba(244,143,177,.18)}
-    button.primary,.tab.active{background:linear-gradient(135deg,var(--pink),var(--pink-dark));color:#fff;border-color:transparent}
-    button.danger{color:#b54f76}
-    .card{padding:20px;margin-bottom:16px}
-    .card h2{margin:0 0 14px;font-size:19px}
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-    label{display:block;font-size:13px;color:var(--muted)}
-    input,select,textarea{
-      width:100%;margin-top:6px;border:1px solid #efcbdb;border-radius:16px;
-      padding:12px;background:#fff;color:var(--text);font:inherit;outline:none;
-    }
-    input:focus,select:focus,textarea:focus{border-color:var(--pink);box-shadow:0 0 0 4px rgba(244,143,177,.12)}
-    textarea{resize:vertical}
-    .full{grid-column:1/-1}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
-    .notice{
-      padding:14px 16px;border-radius:20px;background:var(--pink-soft);
-      font-size:14px;line-height:1.75;border:1px dashed #f2bfd2;
-    }
-    .hidden{display:none!important}
-    .preview{width:100%;max-width:220px;max-height:180px;object-fit:cover;border-radius:18px;border:1px solid var(--line);margin-top:10px;box-shadow:var(--shadow)}
-    .thumb{width:72px;height:72px;object-fit:cover;border-radius:18px;border:1px solid var(--line);flex:0 0 auto}
-    .item{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px dashed #ecd5df}
-    .item:last-child{border-bottom:0}
-    .item-main{display:flex;gap:12px;min-width:0}
-    .item-title{font-weight:700}
-    .meta,.small{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.6}
-    .badge{display:inline-block;border-radius:999px;padding:5px 10px;font-size:12px;white-space:nowrap}
-    .badge.保留{background:var(--mint)}
-    .badge.捐贈,.badge.出售,.badge.丟棄{background:var(--peach)}
-    .badge.待判斷,.badge.再想想{background:var(--yellow)}
-    .review-photo{width:100%;max-height:280px;object-fit:contain;border-radius:20px;background:var(--pink-softer);margin:12px 0;border:1px solid var(--line)}
-    .review-title{font-size:25px;margin:8px 0 4px}
-    .question-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .decision-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-    .recommendation{background:var(--lav);border-left:4px solid var(--pink);padding:14px;border-radius:16px;line-height:1.75}
-    .toolbar{display:grid;grid-template-columns:2fr 1fr;gap:10px}
-    .empty{text-align:center;color:var(--muted);padding:24px 10px}
-    footer{text-align:center;color:var(--muted);font-size:12px;padding:14px 12px 22px}
-    @media(max-width:700px){
-      main{padding:12px}.stats{grid-template-columns:repeat(2,1fr)}
-      .grid,.question-grid,.toolbar{grid-template-columns:1fr}
-      .decision-grid{grid-template-columns:repeat(2,1fr)}
-      .full{grid-column:auto}
-    }
+    :root{--bg:#fff7fb;--bg2:#fff0f7;--card:#ffffff;--text:#5a4350;--muted:#957484;--line:#f4d8e6;--pink:#f48fb1;--pink-dark:#ec6d9a;--pink-soft:#ffe6f0;--pink-softer:#fff2f7;--lav:#f4efff;--mint:#eaf8f0;--peach:#fff0ea;--yellow:#fff8df;--shadow:0 10px 26px rgba(244,143,177,.16)}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif}header{padding:28px 20px;background:linear-gradient(135deg,#fff,#ffe9f3 65%,#fff7fb);border-bottom:1px solid var(--line)}header h1{margin:0;font-size:26px;letter-spacing:.4px}header p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.75}main{max-width:920px;margin:auto;padding:18px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat,.card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}.stat{padding:16px}.stat strong{display:block;font-size:27px;color:var(--pink-dark)}.stat span{font-size:13px;color:var(--muted)}nav{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}button,.upload{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:999px;padding:11px 16px;color:var(--text);transition:.18s transform,.18s box-shadow,.18s background}button:hover,.upload:hover{transform:translateY(-1px);box-shadow:0 8px 16px rgba(244,143,177,.18)}button.primary,.tab.active{background:linear-gradient(135deg,var(--pink),var(--pink-dark));color:#fff;border-color:transparent}button.danger{color:#b54f76}.card{padding:20px;margin-bottom:16px}.card h2{margin:0 0 14px;font-size:19px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}label{display:block;font-size:13px;color:var(--muted)}input,select,textarea{width:100%;margin-top:6px;border:1px solid #efcbdb;border-radius:16px;padding:12px;background:#fff;color:var(--text);font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--pink);box-shadow:0 0 0 4px rgba(244,143,177,.12)}textarea{resize:vertical}.full{grid-column:1/-1}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.notice{padding:14px 16px;border-radius:20px;background:var(--pink-soft);font-size:14px;line-height:1.75;border:1px dashed #f2bfd2}.hidden{display:none!important}.preview{width:100%;max-width:220px;max-height:180px;object-fit:cover;border-radius:18px;border:1px solid var(--line);margin-top:10px;box-shadow:var(--shadow)}.thumb{width:72px;height:72px;object-fit:cover;border-radius:18px;border:1px solid var(--line);flex:0 0 auto}.item{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px dashed #ecd5df}.item:last-child{border-bottom:0}.item-main{display:flex;gap:12px;min-width:0}.item-title{font-weight:700}.meta,.small{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.6}.badge{display:inline-block;border-radius:999px;padding:5px 10px;font-size:12px;white-space:nowrap}.badge.保留{background:var(--mint)}.badge.捐贈,.badge.出售,.badge.丟棄{background:var(--peach)}.badge.待判斷,.badge.再想想{background:var(--yellow)}.review-photo{width:100%;max-height:280px;object-fit:contain;border-radius:20px;background:var(--pink-softer);margin:12px 0;border:1px solid var(--line)}.review-title{font-size:25px;margin:8px 0 4px}.question-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.decision-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.recommendation{background:var(--lav);border-left:4px solid var(--pink);padding:14px;border-radius:16px;line-height:1.75}.toolbar{display:grid;grid-template-columns:2fr 1fr;gap:10px}.empty{text-align:center;color:var(--muted);padding:24px 10px}footer{text-align:center;color:var(--muted);font-size:12px;padding:14px 12px 22px}@media(max-width:700px){main{padding:12px}.stats{grid-template-columns:repeat(2,1fr)}.grid,.question-grid,.toolbar{grid-template-columns:1fr}.decision-grid{grid-template-columns:repeat(2,1fr)}.full{grid-column:auto}}
   </style>
 </head>
 <body>
-<header>
-  <h1>🎀 房間物品整理小精靈 ✨</h1>
-  <p>先把東西可愛地記下來，再慢慢判斷要不要留下來。<br>不用一次整理完，今天先整理一點點也很棒 ♡</p>
-</header>
+<header><h1>🎀 房間物品整理小精靈 ✨</h1><p>先把東西可愛地記下來，再慢慢判斷要不要留下來。<br>不用一次整理完，今天先整理一點點也很棒 ♡</p></header>
 <main>
-  <section class="stats">
-    <div class="stat"><strong id="statTypes">0</strong><span>物品種類</span></div>
-    <div class="stat"><strong id="statQty">0</strong><span>物品總數</span></div>
-    <div class="stat"><strong id="statPending">0</strong><span>待判斷</span></div>
-    <div class="stat"><strong id="statOut">0</strong><span>準備移出</span></div>
-  </section>
-
-  <nav>
-    <button class="tab active" data-tab="record">📸 邊整理邊記錄</button>
-    <button class="tab" data-tab="review">💭 慢慢判斷</button>
-    <button class="tab" data-tab="list">🧸 查看清單</button>
-  </nav>
-
-  <section id="recordPanel">
-    <div class="notice">🌷 小提醒：一次只整理一個角落就好。先拍照、輸入名稱和位置，不需要當下立刻決定去留喔。</div>
-    <div class="card" style="margin-top:14px">
-      <h2>♡ 新增一件物品</h2>
-      <div class="grid">
-        <label>物品名稱 *<input id="name" placeholder="例如：冬季外套、可愛收納盒"></label>
-        <label>分類<select id="category"><option>衣物</option><option>文件</option><option>書籍</option><option>藥品</option><option>旅行用品</option><option>3C用品</option><option>生活用品</option><option>保養化妝品</option><option>食品</option><option>紀念品</option><option>運動用品</option><option>其他</option></select></label>
-        <label>數量<input id="quantity" type="number" min="1" value="1"></label>
-        <label>目前位置<input id="location" placeholder="例如：紙箱A、床下"></label>
-        <label>整理後位置<input id="targetLocation" placeholder="例如：衣櫃上層、抽屜1"></label>
-        <label>物品狀況<select id="condition"><option>良好</option><option>普通</option><option>損壞</option><option>未檢查</option></select></label>
-        <label>過去一年有使用嗎？<select id="usedYear"><option value="unknown">不確定</option><option value="yes">有</option><option value="no">沒有</option></select></label>
-        <label>保存期限<input id="expiry" type="date"></label>
-        <label class="full">拍照或選擇照片<input id="photo" type="file" accept="image/*" capture="environment"><img id="photoPreview" class="preview hidden" alt="照片預覽"></label>
-        <label class="full">備註<textarea id="notes" rows="2" placeholder="例如：可能重複購買、旅行時才會用到"></textarea></label>
-      </div>
-      <div class="actions">
-        <button id="addContinue" class="primary">加入並繼續整理</button>
-        <button id="addView">加入後查看清單</button>
-      </div>
-      <div id="feedback" class="small"></div>
-    </div>
-
-    <div class="card">
-      <h2>🫧 最近新增</h2>
-      <div id="recent"></div>
-    </div>
-  </section>
-
-  <section id="reviewPanel" class="hidden">
-    <div id="reviewEmpty" class="card empty hidden">目前沒有待判斷的物品，先新增幾件再回來看吧 ✨</div>
-    <div id="reviewCard" class="card">
-      <div class="small" id="reviewProgress"></div>
-      <span class="badge 待判斷" id="reviewCategory"></span>
-      <div class="review-title" id="reviewName"></div>
-      <div class="meta" id="reviewMeta"></div>
-      <img id="reviewPhoto" class="review-photo hidden" alt="物品照片">
-      <div class="question-grid" style="margin-top:18px">
-        <label>過去一年有使用嗎？<select id="used"><option value="unknown">不確定</option><option value="yes">有</option><option value="no">沒有</option></select></label>
-        <label>家裡有重複的嗎？<select id="duplicate"><option value="unknown">不確定</option><option value="yes">有</option><option value="no">沒有</option></select></label>
-        <label>未來半年會使用嗎？<select id="future"><option value="unknown">不確定</option><option value="yes">會</option><option value="no">不會</option></select></label>
-        <label>有重要或紀念價值嗎？<select id="important"><option value="unknown">不確定</option><option value="yes">有</option><option value="no">沒有</option></select></label>
-      </div>
-      <div id="recommendation" class="recommendation" style="margin-top:16px">回答問題後，我會給你一個溫柔的小建議 🌸</div>
-      <h2 style="margin-top:20px">💕 最後由你決定</h2>
-      <div class="decision-grid"><button data-decision="保留">保留</button><button data-decision="捐贈">捐贈</button><button data-decision="出售">出售</button><button data-decision="丟棄">丟棄</button><button data-decision="再想想">再想想</button></div>
-    </div>
-  </section>
-
-  <section id="listPanel" class="hidden">
-    <div class="card">
-      <div class="toolbar">
-        <label>搜尋<input id="search" placeholder="搜尋名稱、位置、備註"></label>
-        <label>去留狀態<select id="filter"><option value="全部">全部</option><option>待判斷</option><option>保留</option><option>捐贈</option><option>出售</option><option>丟棄</option><option>再想想</option></select></label>
-      </div>
-      <div id="allItems" style="margin-top:12px"></div>
-      <div class="actions">
-        <button id="exportCsv">匯出 CSV</button>
-        <button id="exportJson">備份資料</button>
-        <label style="display:inline-block"><span class="upload">匯入備份</span><input id="importJson" type="file" accept=".json,application/json" style="display:none"></label>
-        <button id="clearAll" class="danger">清空全部資料</button>
-      </div>
-    </div>
-  </section>
-</main>
-<footer>♡ 資料與照片目前儲存在這台裝置的瀏覽器中。</footer>
+<section class="stats"><div class="stat"><strong id="statTypes">0</strong><span>物品種類</span></div><div class="stat"><strong id="statQty">0</strong><span>物品總數</span></div><div class="stat"><strong id="statPending">0</strong><span>待判斷</span></div><div class="stat"><strong id="statOut">0</strong><span>準備移出</span></div></section>
+<nav><button class="tab active" data-tab="record">📸 邊整理邊記錄</button><button class="tab" data-tab="review">💭 慢慢判斷</button><button class="tab" data-tab="list">🧸 查看清單</button></nav>
+<section id="recordPanel"><div class="notice">🌷 小提醒：一次只整理一個角落就好。先拍照、輸入名稱和位置，不需要當下立刻決定去留喔。</div><div class="card" style="margin-top:14px"><h2>♡ 新增一件物品</h2><div class="grid"><label>物品名稱 *<input id="name" placeholder="例如：冬季外套、可愛收納盒"></label><label>分類<select id="category"><option>衣物</option><option>文件</option><option>書籍</option><option>藥品</option><option>旅行用品</option><option>3C用品</option><option>生活用品</option><option>保養化妝品</option><option>食品</option><option>紀念品</option><option>運動用品</option><option>其他</option></select></label><label>數量<input id="quantity" type="number" min="1" value="1"></label><label>目前位置<input id="location" placeholder="例如：紙箱A、床下"></label><label>整理後位置<input id="targetLocation" placeholder="例如：衣櫃上層、抽屜1"></label><label>物品狀況<select id="condition"><option>良好</option><option>普通</option><option>損壞</option><option>未檢查</option></select></label><label>過去一年有使用嗎？<select id="usedYear"><option value="unknown">不確定</option><option value="yes">有</option><option value="no">沒有</option></select></label><label>保存期限<input id="expiry" type="date"></label><label class="full">拍照或選擇照片<input id="photo" type="file" accept="image/*" capture="environment"><img id="photoPreview" class="preview hidden" alt="照片預覽"></label><label class="full">備註<textarea id="notes" rows="2" placeholder="例如：可能重複購買、旅行時才會用到"></textarea></label></div><div class="actions"><button id="addContinue" class="primary">加入並繼續整理</button><button id="addView">加入後查看清單</button></div><div id="feedback" class="small"></div></div><div class="card"><h2>🫧 最近新增</h2><div id="recent"></div></div></section>
+<section id="reviewPanel" class="hidden"><div id="reviewEmpty" class="card empty hidden">目前沒有待判斷的物品，先新增幾件再回來看吧 ✨</div><div id="reviewCard" class="card"><div class="small" id="reviewProgress"></div><span class="badge 待判斷" id="reviewCategory"></span><div class="review-title" id="reviewName"></div><div class="meta" id="reviewMeta"></div><img id="reviewPhoto" class="review-photo hidden" alt="物品照片"><div class="question-grid" style="margin-top:18px"><label>過去一年有使用嗎？<select id="used"><option value="unknown">不確定</option><option value="yes">有</option><option value="no">沒有</option></select></label><label>家裡有重複的嗎？<select id="duplicate"><option value="unknown">不確定</option><option value="yes">有</option><option value="no">沒有</option></select></label><label>未來半年會使用嗎？<select id="future"><option value="unknown">不確定</option><option value="yes">會</option><option value="no">不會</option></select></label><label>有重要或紀念價值嗎？<select id="important"><option value="unknown">不確定</option><option value="yes">有</option><option value="no">沒有</option></select></label></div><div id="recommendation" class="recommendation" style="margin-top:16px">回答問題後，我會給你一個溫柔的小建議 🌸</div><h2 style="margin-top:20px">💕 最後由你決定</h2><div class="decision-grid"><button data-decision="保留">保留</button><button data-decision="捐贈">捐贈</button><button data-decision="出售">出售</button><button data-decision="丟棄">丟棄</button><button data-decision="再想想">再想想</button></div></div></section>
+<section id="listPanel" class="hidden"><div class="card"><div class="toolbar"><label>搜尋<input id="search" placeholder="搜尋名稱、位置、備註"></label><label>去留狀態<select id="filter"><option value="全部">全部</option><option>待判斷</option><option>保留</option><option>捐贈</option><option>出售</option><option>丟棄</option><option>再想想</option></select></label></div><div id="allItems" style="margin-top:12px"></div><div class="actions"><button id="exportCsv">匯出 CSV</button><button id="exportJson">備份資料</button><label style="display:inline-block"><span class="upload">匯入備份</span><input id="importJson" type="file" accept=".json,application/json" style="display:none"></label><button id="clearAll" class="danger">清空全部資料</button></div></div></section>
+</main><footer>♡ 資料與照片目前儲存在這台裝置的瀏覽器中。</footer>
 <script>
-const KEY="room_sorting_webapp_v3";
-let items=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem("room_sorting_webapp_v2")||"[]"),reviewIndex=0,photoData="";
-const $=id=>document.getElementById(id);
-function save(){try{localStorage.setItem(KEY,JSON.stringify(items));renderAll()}catch(e){alert("照片或資料太多，請先匯出備份並刪除部分照片。")}}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
-function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-function switchTab(tab){["record","review","list"].forEach(x=>$(x+"Panel").classList.toggle("hidden",x!==tab));document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));if(tab==="review")renderReview();if(tab==="list")renderList()}
-function readPhoto(file){return new Promise((resolve,reject)=>{if(!file)return resolve("");const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas"),max=900,scale=Math.min(1,max/Math.max(img.width,img.height));c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext("2d").drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL("image/jpeg",.72))};img.onerror=reject;img.src=r.result};r.onerror=reject;r.readAsDataURL(file)})}
-function addItem(goList=false){const name=$("name").value.trim();if(!name){$("feedback").textContent="請先輸入物品名稱喔。";return}items.unshift({id:uid(),name,category:$("category").value,quantity:Math.max(1,Number($("quantity").value||1)),location:$("location").value.trim(),targetLocation:$("targetLocation").value.trim(),condition:$("condition").value,expiry:$("expiry").value,photo:photoData,notes:$("notes").value.trim(),decision:"待判斷",answers:{used:$("usedYear").value},createdAt:new Date().toISOString()});const loc=$("location").value;$("name").value="";$("quantity").value=1;$("targetLocation").value="";$("condition").value="良好";$("usedYear").value="unknown";$("expiry").value="";$("notes").value="";$("photo").value="";photoData="";$("photoPreview").classList.add("hidden");$("location").value=loc;$("feedback").textContent="已加入清單，妳做得很好 ✨";save();if(goList)switchTab("list")}
-function renderStats(){$("statTypes").textContent=items.length;$("statQty").textContent=items.reduce((s,x)=>s+Number(x.quantity||0),0);$("statPending").textContent=items.filter(x=>["待判斷","再想想"].includes(x.decision)).length;$("statOut").textContent=items.filter(x=>["捐贈","出售","丟棄"].includes(x.decision)).length}
-function usedText(v){return v==="yes"?"有使用":v==="no"?"未使用":"不確定"}
-function itemHtml(x,c=false){return `<div class="item" data-id="${x.id}"><div class="item-main">${x.photo?`<img class="thumb" src="${x.photo}" alt="照片">`:""}<div><div class="item-title">${esc(x.name)}</div><div class="meta">${esc(x.category)} · ${x.quantity}件 · 目前：${esc(x.location||"未填")} · 整理後：${esc(x.targetLocation||"未填")}</div><div class="small">過去一年：${usedText(x.answers?.used)} · ${esc(x.condition)}</div>${x.notes?`<div class="small">${esc(x.notes)}</div>`:""}</div></div><div><span class="badge ${esc(x.decision)}">${esc(x.decision)}</span>${c?`<div style="margin-top:8px"><button class="deleteBtn danger">刪除</button></div>`:""}</div></div>`}
-function renderRecent(){$("recent").innerHTML=items.length?items.slice(0,5).map(x=>itemHtml(x)).join(""):'<div class="empty">還沒有新增物品，先從第一件開始吧 ♡</div>'}
-function pending(){return items.filter(x=>["待判斷","再想想"].includes(x.decision))}
-function current(){const p=pending();if(!p.length)return null;reviewIndex=Math.min(reviewIndex,p.length-1);return p[reviewIndex]}
-function advice(x){const a=x.answers||{},d=x.expiry?new Date(x.expiry+"T00:00:00"):null;if(d&&d<new Date())return"🌼 這項物品已超過保存期限，建議優先確認是否丟棄或回收。";if(x.condition==="損壞"&&a.important!=="yes")return"🌼 物品已損壞且沒有重要價值，可以考慮丟棄或回收。";if(a.important==="yes")return"🌼 這件物品有重要或紀念價值，可以保留，並幫它安排一個固定位置。";if(a.used==="yes"||a.future==="yes")return"🌼 近期仍有使用需求，可以保留並放到好拿的位置。";if(a.duplicate==="yes"&&x.condition==="良好")return"🌼 家裡已經有重複物品，狀況良好的話，可考慮捐贈或出售。";if(a.used==="no"&&a.future==="no")return"🌼 超過一年未使用，未來也沒有需求，可以考慮讓它離開房間。";return"🌼 如果現在還不確定，也可以先放進「再想想箱」，之後再決定。"}
-function updateAnswers(){const x=current();if(!x)return;x.answers={used:$("used").value,duplicate:$("duplicate").value,future:$("future").value,important:$("important").value};$("recommendation").textContent=advice(x);localStorage.setItem(KEY,JSON.stringify(items))}
-function renderReview(){const x=current(),empty=!x;$("reviewEmpty").classList.toggle("hidden",!empty);$("reviewCard").classList.toggle("hidden",empty);if(!x)return;const p=pending();$("reviewProgress").textContent=`第 ${reviewIndex+1} 件／共 ${p.length} 件待判斷`;$("reviewCategory").textContent=x.category;$("reviewName").textContent=x.name;$("reviewMeta").textContent=`${x.quantity}件 · 目前：${x.location||"未填"} · 整理後：${x.targetLocation||"未填"} · ${x.condition}`;$("reviewPhoto").classList.toggle("hidden",!x.photo);if(x.photo)$("reviewPhoto").src=x.photo;$("used").value=x.answers?.used||"unknown";$("duplicate").value=x.answers?.duplicate||"unknown";$("future").value=x.answers?.future||"unknown";$("important").value=x.answers?.important||"unknown";$("recommendation").textContent=advice(x)}
-function decide(v){const x=current();if(!x)return;updateAnswers();x.decision=v;save();renderReview()}
-function renderList(){const q=$("search").value.trim().toLowerCase(),f=$("filter").value,shown=items.filter(x=>[x.name,x.category,x.location,x.targetLocation,x.notes].join(" ").toLowerCase().includes(q)&&(f==="全部"||x.decision===f));$("allItems").innerHTML=shown.length?shown.map(x=>itemHtml(x,true)).join(""):'<div class="empty">沒有符合條件的物品喔。</div>';document.querySelectorAll(".deleteBtn").forEach(b=>b.onclick=e=>{const id=e.target.closest("[data-id]").dataset.id,x=items.find(i=>i.id===id);if(confirm(`確定刪除「${x?.name||"這項物品"}」嗎？`)&&confirm("再次確認：刪除後無法復原。")){items=items.filter(i=>i.id!==id);save();renderList()}})}
-function download(n,c,t){const b=new Blob([c],{type:t}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=n;a.click();URL.revokeObjectURL(u)}
-function exportCsv(){const h=["物品名稱","分類","數量","目前位置","整理後位置","物品狀況","過去一年有使用","保存期限","去留決定","備註"],q=v=>`"${String(v??"").replaceAll('"','""')}"`,r=items.map(x=>[x.name,x.category,x.quantity,x.location,x.targetLocation,x.condition,x.answers?.used,x.expiry,x.decision,x.notes].map(q).join(","));download("房間物品清單.csv","\uFEFF"+[h.map(q).join(","),...r].join("\n"),"text/csv;charset=utf-8")}
-function renderAll(){renderStats();renderRecent();if(!$("reviewPanel").classList.contains("hidden"))renderReview();if(!$("listPanel").classList.contains("hidden"))renderList()}
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$("photo").onchange=async e=>{photoData=await readPhoto(e.target.files[0]);$("photoPreview").src=photoData;$("photoPreview").classList.toggle("hidden",!photoData)};$("addContinue").onclick=()=>addItem(false);$("addView").onclick=()=>addItem(true);["used","duplicate","future","important"].forEach(id=>$(id).onchange=updateAnswers);document.querySelectorAll("[data-decision]").forEach(b=>b.onclick=()=>decide(b.dataset.decision));$("search").oninput=renderList;$("filter").onchange=renderList;$("exportCsv").onclick=exportCsv;$("exportJson").onclick=()=>download("房間物品備份.json",JSON.stringify(items,null,2),"application/json");$("importJson").onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(Array.isArray(d)&&confirm(`匯入 ${d.length} 筆資料並取代目前資料？`)){items=d;save()}}catch{alert("備份檔格式不正確。")}};r.readAsText(file)};$("clearAll").onclick=()=>{if(items.length&&confirm("確定清空全部資料嗎？")&&confirm("再次確認：此動作無法復原。")){items=[];save()}};renderAll();
+const KEY="room_sorting_webapp_v3";let items=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem("room_sorting_webapp_v2")||"[]"),reviewIndex=0,photoData="";const $=id=>document.getElementById(id);function save(){try{localStorage.setItem(KEY,JSON.stringify(items));renderAll()}catch(e){alert("照片或資料太多，請先匯出備份並刪除部分照片。")}}function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}function switchTab(tab){["record","review","list"].forEach(x=>$(x+"Panel").classList.toggle("hidden",x!==tab));document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));if(tab==="review")renderReview();if(tab==="list")renderList()}function readPhoto(file){return new Promise((resolve,reject)=>{if(!file)return resolve("");const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas"),max=900,scale=Math.min(1,max/Math.max(img.width,img.height));c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext("2d").drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL("image/jpeg",.72))};img.onerror=reject;img.src=r.result};r.onerror=reject;r.readAsDataURL(file)})}function addItem(goList=false){const name=$("name").value.trim();if(!name){$("feedback").textContent="請先輸入物品名稱喔。";return}items.unshift({id:uid(),name,category:$("category").value,quantity:Math.max(1,Number($("quantity").value||1)),location:$("location").value.trim(),targetLocation:$("targetLocation").value.trim(),condition:$("condition").value,expiry:$("expiry").value,photo:photoData,notes:$("notes").value.trim(),decision:"待判斷",answers:{used:$("usedYear").value},createdAt:new Date().toISOString()});const loc=$("location").value;$("name").value="";$("quantity").value=1;$("targetLocation").value="";$("condition").value="良好";$("usedYear").value="unknown";$("expiry").value="";$("notes").value="";$("photo").value="";photoData="";$("photoPreview").classList.add("hidden");$("location").value=loc;$("feedback").textContent="已加入清單，妳做得很好 ✨";save();if(goList)switchTab("list")}function renderStats(){$("statTypes").textContent=items.length;$("statQty").textContent=items.reduce((s,x)=>s+Number(x.quantity||0),0);$("statPending").textContent=items.filter(x=>["待判斷","再想想"].includes(x.decision)).length;$("statOut").textContent=items.filter(x=>["捐贈","出售","丟棄"].includes(x.decision)).length}function usedText(v){return v==="yes"?"有使用":v==="no"?"未使用":"不確定"}function itemHtml(x,c=false){return `<div class="item" data-id="${x.id}"><div class="item-main">${x.photo?`<img class="thumb" src="${x.photo}" alt="照片">`:""}<div><div class="item-title">${esc(x.name)}</div><div class="meta">${esc(x.category)} · ${x.quantity}件 · 目前：${esc(x.location||"未填")} · 整理後：${esc(x.targetLocation||"未填")}</div><div class="small">過去一年：${usedText(x.answers?.used)} · ${esc(x.condition)}</div>${x.notes?`<div class="small">${esc(x.notes)}</div>`:""}</div></div><div><span class="badge ${esc(x.decision)}">${esc(x.decision)}</span>${c?`<div style="margin-top:8px"><button class="deleteBtn danger">刪除</button></div>`:""}</div></div>`}function renderRecent(){$("recent").innerHTML=items.length?items.slice(0,5).map(x=>itemHtml(x)).join(""):'<div class="empty">還沒有新增物品，先從第一件開始吧 ♡</div>'}function pending(){return items.filter(x=>["待判斷","再想想"].includes(x.decision))}function current(){const p=pending();if(!p.length)return null;reviewIndex=Math.min(reviewIndex,p.length-1);return p[reviewIndex]}function advice(x){const a=x.answers||{},d=x.expiry?new Date(x.expiry+"T00:00:00"):null;if(d&&d<new Date())return"🌼 這項物品已超過保存期限，建議優先確認是否丟棄或回收。";if(x.condition==="損壞"&&a.important!=="yes")return"🌼 物品已損壞且沒有重要價值，可以考慮丟棄或回收。";if(a.important==="yes")return"🌼 這件物品有重要或紀念價值，可以保留，並幫它安排一個固定位置。";if(a.used==="yes"||a.future==="yes")return"🌼 近期仍有使用需求，可以保留並放到好拿的位置。";if(a.duplicate==="yes"&&x.condition==="良好")return"🌼 家裡已經有重複物品，狀況良好的話，可考慮捐贈或出售。";if(a.used==="no"&&a.future==="no")return"🌼 超過一年未使用，未來也沒有需求，可以考慮讓它離開房間。";return"🌼 如果現在還不確定，也可以先放進「再想想箱」，之後再決定。"}function updateAnswers(){const x=current();if(!x)return;x.answers={used:$("used").value,duplicate:$("duplicate").value,future:$("future").value,important:$("important").value};$("recommendation").textContent=advice(x);localStorage.setItem(KEY,JSON.stringify(items))}function renderReview(){const x=current(),empty=!x;$("reviewEmpty").classList.toggle("hidden",!empty);$("reviewCard").classList.toggle("hidden",empty);if(!x)return;const p=pending();$("reviewProgress").textContent=`第 ${reviewIndex+1} 件／共 ${p.length} 件待判斷`;$("reviewCategory").textContent=x.category;$("reviewName").textContent=x.name;$("reviewMeta").textContent=`${x.quantity}件 · 目前：${x.location||"未填"} · 整理後：${x.targetLocation||"未填"} · ${x.condition}`;$("reviewPhoto").classList.toggle("hidden",!x.photo);if(x.photo)$("reviewPhoto").src=x.photo;$("used").value=x.answers?.used||"unknown";$("duplicate").value=x.answers?.duplicate||"unknown";$("future").value=x.answers?.future||"unknown";$("important").value=x.answers?.important||"unknown";$("recommendation").textContent=advice(x)}function decide(v){const x=current();if(!x)return;updateAnswers();x.decision=v;save();renderReview()}function renderList(){const q=$("search").value.trim().toLowerCase(),f=$("filter").value,shown=items.filter(x=>[x.name,x.category,x.location,x.targetLocation,x.notes].join(" ").toLowerCase().includes(q)&&(f==="全部"||x.decision===f));$("allItems").innerHTML=shown.length?shown.map(x=>itemHtml(x,true)).join(""):'<div class="empty">沒有符合條件的物品喔。</div>';document.querySelectorAll(".deleteBtn").forEach(b=>b.onclick=e=>{const id=e.target.closest("[data-id]").dataset.id,x=items.find(i=>i.id===id);if(confirm(`確定刪除「${x?.name||"這項物品"}」嗎？`)&&confirm("再次確認：刪除後無法復原。")){items=items.filter(i=>i.id!==id);save();renderList()}})}function download(n,c,t){const b=new Blob([c],{type:t}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=n;a.click();URL.revokeObjectURL(u)}function exportCsv(){const h=["物品名稱","分類","數量","目前位置","整理後位置","物品狀況","過去一年有使用","保存期限","去留決定","備註"],q=v=>`"${String(v??"").replaceAll('"','""')}"`,r=items.map(x=>[x.name,x.category,x.quantity,x.location,x.targetLocation,x.condition,x.answers?.used,x.expiry,x.decision,x.notes].map(q).join(","));download("房間物品清單.csv","\uFEFF"+[h.map(q).join(","),...r].join("\n"),"text/csv;charset=utf-8")}function renderAll(){renderStats();renderRecent();if(!$("reviewPanel").classList.contains("hidden"))renderReview();if(!$("listPanel").classList.contains("hidden"))renderList()}document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$("photo").onchange=async e=>{photoData=await readPhoto(e.target.files[0]);$("photoPreview").src=photoData;$("photoPreview").classList.toggle("hidden",!photoData)};$("addContinue").onclick=()=>addItem(false);$("addView").onclick=()=>addItem(true);["used","duplicate","future","important"].forEach(id=>$(id).onchange=updateAnswers);document.querySelectorAll("[data-decision]").forEach(b=>b.onclick=()=>decide(b.dataset.decision));$("search").oninput=renderList;$("filter").onchange=renderList;$("exportCsv").onclick=exportCsv;$("exportJson").onclick=()=>download("房間物品備份.json",JSON.stringify(items,null,2),"application/json");$("importJson").onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(Array.isArray(d)&&confirm(`匯入 ${d.length} 筆資料並取代目前資料？`)){items=d;save()}}catch{alert("備份檔格式不正確。")}};r.readAsText(file)};$("clearAll").onclick=()=>{if(items.length&&confirm("確定清空全部資料嗎？")&&confirm("再次確認：此動作無法復原。")){items=[];save()}};renderAll();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
 </script>
 </body>
 </html>
