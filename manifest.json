@@ -1,0 +1,20 @@
+{
+  "name": "房間物品整理小精靈",
+  "short_name": "房間整理",
+  "description": "邊整理、邊記錄、慢慢決定物品去留的個人房間整理 App",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff7fb",
+  "theme_color": "#f48fb1",
+  "lang": "zh-Hant",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
