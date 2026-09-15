@@ -1,12 +1,12 @@
 {
-  "name": "房間物品整理小精靈",
-  "short_name": "房間整理",
-  "description": "邊整理、邊記錄、慢慢決定物品去留的個人房間整理 App",
+  "name": "物品決策 OS",
+  "short_name": "物品決策",
+  "description": "記錄物品、分析閒置與重複購買原因，形成個人購物規則的整理決策 App",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#fff7fb",
-  "theme_color": "#f48fb1",
+  "background_color": "#fff8fb",
+  "theme_color": "#ef7fa7",
   "lang": "zh-Hant",
   "orientation": "portrait-primary",
   "icons": [
